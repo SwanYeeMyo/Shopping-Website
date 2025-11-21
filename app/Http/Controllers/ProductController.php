@@ -26,6 +26,8 @@ class ProductController extends Controller
     //create Data
     public function create(Request $request)
     {
+
+        // dd($request);
         $this->getValidationData($request);
         $data = $this->getRequestData($request);
         if ($request->hasFile('image')) {
@@ -35,7 +37,6 @@ class ProductController extends Controller
         }
         Product::create($data);
         return \redirect()->route('admin#product')->with(['success' => 'Create Success']);
-
     }
     //edit
     public function edit(Request $request, $id)
@@ -63,7 +64,6 @@ class ProductController extends Controller
         }
         Product::where('product_id', $id)->update($data);
         return \redirect()->route('admin#product')->with(['success' => ' Product Update Success']);
-
     }
     //delete
     public function delete(Request $request)

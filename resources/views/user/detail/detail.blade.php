@@ -23,12 +23,12 @@
                     <div class="card-body ">
                         <h6>{{ $product->name }}</h6>
                         <h5 class="text-primary text-left"><b>{{ $product->price }}</b> Ks .</h5>
-                        <button type="button" class="btn btn-light" data-bs-toggle="tooltip" data-bs-placement="right"
+                        {{-- <button type="button" class="btn btn-light" data-bs-toggle="tooltip" data-bs-placement="right"
                             data-bs-title="Apple 1 Year Limited Warranty was included.">
                             <span>
                                 1 Year Warranty
                             </span>
-                        </button>
+                        </button> --}}
                         <div class="mt-4">
                             <p>{{ $product->description }}</p>
                         </div>
@@ -47,17 +47,6 @@
                                         <option value="4">4</option>
 
                                     </select>
-                                    @if ($product->category_name != 'Earphones')
-                                        <select name="color" class="form-select mx-1" aria-label="Default select example">
-
-                                            <option selected value="Silver">Silver </option>
-                                            <option value="Black">Black</option>
-                                            <option value="Purple">Purple</option>
-
-                                            <option value="Green">Green</option>
-                                        </select>
-                                    @endif
-
                                     <div>
                                         <button type="submit" class="mx-2 btn btn-outline-primary"><i
                                                 class="fa-solid fa-cart-plus"></i></button>
@@ -66,9 +55,6 @@
                                 </div>
 
                             </form>
-
-
-
 
                         </div>
                     </div>
@@ -105,31 +91,35 @@
             </div>
         </div>
         <div class="row mt-5 g-3">
-            <h5>Similar Items</h5>
+            <div class="col-12">
+                <h5>Similar Items</h5>
+            </div>
+
             @foreach ($randomNumber as $rN)
-                <div class="col-lg-3 col-md-6 col-sm-12">
-                    <div class="card h-100 border">
-                        <div class="card-header">
-                            <a href="{{ route('user#detail', $rN->product_id) }}">
-                                <img src="{{ asset('storage/' . $rN->image) }}" class="img-fluid w-100" alt="">
-                            </a>
-                        </div>
-                        <div class="card-body text-center">
-                            <h6>
-                                {{ $rN->name }}
-                            </h6>
-                            <h6 class="text-primary">
-                                {{ $rN->price }}
-                            </h6>
-                            <span class="mx-2 text-primary">
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                    <div class="card h-100 border-none shadow-sm">
+                        <!-- Image -->
+                        <a href="{{ route('user#detail', $rN->product_id) }}" class="d-block">
+                            <div class="card-img-top d-flex justify-content-center align-items-center"
+                                style="height: 180px; overflow: hidden;">
+                                <img src="{{ asset('storage/' . $rN->image) }}" class="img-fluid"
+                                    alt="{{ $rN->name }}"
+                                    style="object-fit: contain; max-width: 100%; max-height: 100%;">
+                            </div>
+                        </a>
+
+                        <!-- Card Body -->
+                        <div class="card-body text-center py-2 d-flex flex-column justify-content-between">
+                            <h6 class="mb-1">{{ $rN->name }}</h6>
+                            <p class="mb-2 text-primary">{{ $rN->price }}</p>
+                            <div class="text-warning">
                                 <i class="fa-solid fa-star"></i>
                                 <i class="fa-solid fa-star"></i>
                                 <i class="fa-solid fa-star"></i>
                                 <i class="fa-solid fa-star"></i>
-                            </span>
+                            </div>
                         </div>
                     </div>
-
                 </div>
             @endforeach
         </div>

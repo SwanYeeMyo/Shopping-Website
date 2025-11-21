@@ -163,12 +163,9 @@
     <div class="container mt-5 pt-5">
         <div class="row g-3">
             <div class="col-md-4">
-                <h2>Quick Links</h2>
-                <h5>Drinks</h5>
-                <h5>Bundles</h5>
-                <h5>Recipes</h5>
-                <h5>About</h5>
-
+                <h2>Home</h2>
+                <h5>Product</h5>
+                <h5>Pending Orders</h5>
             </div>
             <div class="col-md-4">
                 <h2>Our mission</h2>

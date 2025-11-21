@@ -27,12 +27,10 @@
                     <table class="table align-middle" id="dataTable">
                         <thead>
                             <tr>
-                                <th scope="col">Order_id</th>
-                                <th scope="col">Image</th>
-                                <th scope="col">User Name</th>
-                                <th scope="col">Product Name</th>
-                                <th>Total</th>
-                                <th>Action</th>
+                                <th scope="col">Id</th>
+                                <th scope="col">User</th>
+                                <th scope="col">total</th>
+                                <th scope="col">Status</th>
                                 <th>Date</th>
                             </tr>
                         </thead>
@@ -40,10 +38,20 @@
                             @csrf
                             @foreach ($history as $h)
                                 <tr>
-                                    <td>{{ $h->order_id }}</td>
-                                    <td><img src="{{ asset('storage/' . $h->image) }}" width="100" alt=""></td>
-                                    <td>{{ $h->user_name }}</td>
-                                    <td>{{ $h->product_name }}</td>
+                                    <td>
+                                        <a href="{{ route('user.detail.orderDetail', $h->id) }}"
+                                            class="text-decoration-none">
+                                            {{ $h->id }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('user.detail.orderDetail', $h->id) }}"
+                                            class="text-decoration-underline text-black font-bold">
+                                            {{ $h->user->name }}
+                                        </a>
+
+                                    </td>
+
                                     <td>{{ $h->total_price }}</td>
                                     <td>
                                         @if ($h->status == 0)

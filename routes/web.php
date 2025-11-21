@@ -33,7 +33,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/cart/delete', [userController::class, 'deleteCart'])->name('user#cartDelete');
     Route::get('/cart/deleteAll', [userController::class, 'cartDeleteAll'])->name('user#cartDAll');
     Route::get('/ajax/order', [AjaxController::class, 'order'])->name('user#order');
+    Route::get('/orders/detail/{id}', [OrderListController::class, 'UserOrderDetail'])->name('user.detail.orderDetail');
 });
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -45,22 +47,35 @@ Route::middleware([
         Route::post('/Update', [AdminController::class, 'update'])->name('admin#update');
         Route::post('/ChangePassword', [AdminController::class, 'changePassword'])->name('admin#chgPassword');
         Route::get('/Products', [ProductController::class, 'index'])->name('admin#product');
-//product Create Edit adn Delete
+        //product Create Edit adn Delete
         Route::post('/Products/create', [ProductController::class, 'create'])->name('product#productCreate');
         Route::post('/Products/delete', [ProductController::class, 'delete'])->name('product#delete');
         Route::get('/Products/edit/{id}', [ProductController::class, 'edit'])->name('product#edit');
         Route::post('/Products/update', [ProductController::class, 'update'])->name('product#update');
-//end
-//category-creat
+        //end
+        //category-creat
         Route::get('/Category', [CategoryController::class, 'index'])->name('admin#category');
         Route::post('/categorydCreate', [CategoryController::class, 'create'])->name('admin#createCategory');
         Route::post('/category/delete', [CategoryController::class, 'delete'])->name('admin#deleteCategory');
         Route::post('/category/edit', [CategoryController::class, 'Edit'])->name('admin#editCategory');
         Route::post('/category/update', [CategoryController::class, 'update'])->name('admin#updateCategory');
-//orders
+        //orders
+
         Route::get('/orders', [OrderListController::class, 'index'])->name('admin#orderList');
+        Route::get('/orders/{order}/detail', [OrderListController::class, 'detail'])
+            ->name('orders.detail');
+        Route::post('/orders/change-status', [OrderListController::class, 'changeStatus'])
+            ->name('orders.changeStatus');
+
+
         //users
+
         Route::get('users', [AdminController::class, 'users'])->name('admin#users');
+        Route::get('users/edit/{id}', [AdminController::class, 'edit'])->name('admin#edit');
+        // Route::post('users/create', [AdminController::class, 'users'])->name('admin#users');
+        // Route::post('users/store', [AdminController::class, 'users'])->name('admin#users');
+        Route::post('users/{id}/update', [AdminController::class, 'userUpdate'])->name('admin#userUpdate');
+        // Route::get('users/{id}/delete', [AdminController::class, 'users'])->name('admin#users');
     });
 
     //admin

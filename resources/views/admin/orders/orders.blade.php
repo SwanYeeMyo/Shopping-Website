@@ -35,12 +35,12 @@
                                         class="fa-solid fa-magnifying-glass"></i></button>
                             </div>
                         </form>
-                        <div class="col-md-3 col-sm-4 col-xs-6">
+                        {{-- <div class="col-md-3 col-sm-4 col-xs-6">
                             <button type="button " class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#ModalEdit" data-bs-whatever=""><i
                                     class="mx-1 fa-solid fa-plus"></i>Create</button>
 
-                        </div>
+                        </div> --}}
                     </div>
 
                     <div class="table-responsive">
@@ -48,12 +48,11 @@
                             <thead>
                                 <tr>
                                     <th class="border-top-0">ID</th>
-                                    <th class="border-top-0">user_id</th>
-                                    <th class="border-top-0">product_id</th>
-                                    <th class="border-top-0">qty</th>
-                                    <th class="border-top-0">total</th>
-                                    <th class="border-top-0">order_code</th>
+                                    <th class="border-top-0">User Name</th>
+                                    <th class="border-top-0">Total</th>
+                                    <th class="border-top-0">Staus</th>
                                     <th class="border-top-0">Action</th>
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -61,12 +60,24 @@
                                 @foreach ($orders as $o)
                                     <tr>
                                         <td>{{ $o->id }}</td>
-                                        <td>{{ $o->user_id }}</td>
-                                        <td>{{ $o->product_id }}</td>
-                                        <td>{{ $o->qty }}</td>
-                                        <td>{{ $o->total }}</td>
-                                        <td>{{ $o->order_code }}</td>
                                         <td>
+                                            {{ $o->user->name }}</td>
+                                        <td>{{ number_format($o->total_price ?? 0) }} kyats</td>
+
+                                        <td>
+                                            <select class="form-select changeStatus" data-id="{{ $o->id }}">
+                                                <option value="0" {{ $o->status == 0 ? 'selected' : '' }}>Pending
+                                                </option>
+                                                <option value="1" {{ $o->status == 1 ? 'selected' : '' }}>Success
+                                                </option>
+                                                <option value="2" {{ $o->status == 2 ? 'selected' : '' }}>Rejected
+                                                </option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('orders.detail', $o->id) }}" class="btn btn-info">
+                                                View Detail
+                                            </a>
                                             <button class="btn btn-danger  deleteProudctBtn" title="{{ $o->id }}"
                                                 value="{{ $o->id }}"><i
                                                     class="fa-solid fa-trash-can text-light"></i></button>
@@ -118,16 +129,41 @@
     </div>
     <!-- Model Update End -->
     <script>
-        //model pop up
+        // Delete modal
         $(document).ready(function() {
             $('.deleteProudctBtn').click(function(e) {
                 e.preventDefault();
                 var product_id = $(this).val();
                 var title = $(this).attr('title');
+
                 $('#deleteName').text(title);
                 $('#product_id').val(product_id);
                 $('#deleteOrders').modal('show');
-            })
+            });
+        });
+
+        // Change order status
+        $(document).on('change', '.changeStatus', function() {
+            let id = $(this).data('id');
+            let status = $(this).val();
+
+            $.ajax({
+                type: "POST",
+                url: "{{ route('orders.changeStatus') }}",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    id: id,
+                    status: status
+                },
+                success: function(response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Status Updated',
+                        text: response.message,
+                        timer: 1500
+                    });
+                }
+            });
         });
     </script>
 @endsection

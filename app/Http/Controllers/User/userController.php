@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\cart;
 use App\Models\Category;
 use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\orderList;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +16,22 @@ class userController extends Controller
 {
     public function index()
     {
-        return view('user.Home');
+        // 3 Recently Added Products
+        $recentlyAddedProducts = Product::orderBy('created_at', 'desc')
+            ->limit(3)
+            ->get();
+
+        // 3 Most Popular Products (by number of times ordered)
+        $popularProductIds = OrderItem::select('product_id')
+            ->selectRaw('COUNT(*) as total_ordered')
+            ->groupBy('product_id')
+            ->orderByDesc('total_ordered')
+            ->limit(3)
+            ->pluck('product_id');
+
+        $popularProducts = Product::whereIn('product_id', $popularProductIds)->get();
+
+        return view('user.home', compact('recentlyAddedProducts', 'popularProducts'));
     }
     public function product()
     {
@@ -28,10 +45,8 @@ class userController extends Controller
         if (Auth::user()) {
             $carts = cart::where('user_id', Auth::user()->id)->get();
             return view('user.product', compact('products', 'categories', 'carts'));
-
         }
         return view('user.product', compact('products', 'categories'));
-
     }
     public function filter($id)
     {
@@ -42,12 +57,9 @@ class userController extends Controller
         if (Auth::user()) {
             $carts = cart::where('user_id', Auth::user()->id)->get();
             return view('user.product', compact('products', 'categories', 'carts'));
-
         } else {
             return view('user.product', compact('products', 'categories'));
-
         }
-
     }
     public function details(Request $request, $id)
     {
@@ -95,20 +107,18 @@ class userController extends Controller
         cart::where('cart_id', $id)->delete();
         return \redirect()->route('user#cart')->with(['success' => 'Delete Success']);
     }
+
     public function cartDeleteAll()
     {
         cart::truncate();
         return \redirect()->route('user#cart')->with(['success' => 'Delete Success']);
-
     }
     //order
     public function history(Request $request)
     {
-        $history = Order::select('orders.*', 'users.name as user_name', 'products.name as product_name', 'products.image')
-            ->join('products', 'orders.product_id', 'products.product_id')
-            ->join('users', 'orders.user_id', 'users.id')->orderBy('order_id', 'desc')->where('user_id', Auth::user()->id)->get();
-        // dd($history->toArray());
+
+        $history = Order::with('orderItems')->where('user_id', Auth::user()->id)->get();
+
         return view('user.detail.history', \compact('history'));
     }
-
 }

@@ -14,66 +14,77 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <div class="container">
-                    <div class="row">
 
-                        <div class="col-lg-4 col-md-4 col-sm-6 col-12">
-                            <div class="card border-0 shadow p-1  h-100 w-100">
-                                <div class="card-header border-0">
-                                    <span class="d-block text-center">Iphone</span>
-                                </div>
-                                <div class="card-body border-0">
-                                    <img src="{{ asset('user/maxresdefault (1).jpg') }}" class="img-fluid" alt="">
-                                </div>
+    <div id="products" class="container-fluid py-16">
+        <div class="container">
 
-                                <div class="card-footer border-0 d-flex justify-content-center">
-                                    <a href="{{ url('http://127.0.0.1:8000/product/filter/1') }}">
-                                        <button class="btn btn-outline-dark">Check Product Here</button>
-                                    </a>
-                                </div>
-
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-4 col-sm-6 col-12">
-                            <div class="card border-0 shadow p-1  h-100 w-100">
-                                <div class="card-header border-0">
-                                    <span class="d-block text-center">Apple Watches</span>
-                                </div>
-                                <div class="card-body border-0">
-                                    <img src="{{ asset('user/maxresdefault (2).jpg') }}" class="img-fluid" alt="">
-                                </div>
-
-                                <div class="card-footer border-0 d-flex justify-content-center">
-                                    <a href="{{ url('http://127.0.0.1:8000/product/filter/3') }}">
-                                        <button class="btn btn-outline-dark">Check Product Here</button>
-                                    </a>
-                                </div>
-
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-4 col-sm-6 col-12">
-                            <div class="card border-0 shadow p-1 h-100 w-100">
-                                <div class="card-header border-0">
-                                    <span class="d-block text-center">MacBooks</span>
-                                </div>
-                                <div class="card-body">
-                                    <img src="{{ asset('user/maxresdefault.jpg') }}" class="img-fluid" alt="">
-                                </div>
-
-                                <div class="card-footer border-0 d-flex justify-content-center">
-                                    <a href="{{ url('http://127.0.0.1:8000/product/filter/2') }}">
-                                        <button class="btn btn-outline-dark">Check Product Here</button>
-                                    </a>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
+            <!-- Recently Added Products -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <h2 class="text-center mb-4">Recently Added Products</h2>
                 </div>
+
+                @if ($recentlyAddedProducts->count() > 0)
+                    @foreach ($recentlyAddedProducts as $product)
+                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 mb-4">
+                            <div class="card border-0 mh-100">
+
+
+                                <div class="card-body d-flex justify-content-center align-items-center p-2"
+                                    style="height: 220px;">
+                                    <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid"
+                                        alt="{{ $product->name }}"
+                                        style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                                </div>
+                                <div class="card-footer border-0 text-center py-2">
+                                    <div class="card-header bg-light border-0 text-center py-2">
+                                        <span class="d-block">{{ $product->name }}</span>
+                                        <span>{{ $product->price }}</span>
+                                    </div>
+                                    <a href="{{ url('product/filter/' . $product->category_id) }}"
+                                        class="btn btn-outline-primary btn-sm">
+                                        Check Product Here
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
             </div>
+
+            <!-- Popular Products -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <h2 class="text-center mb-4">Popular Products</h2>
+                </div>
+
+                @if ($popularProducts->count() > 0)
+                    @foreach ($popularProducts as $product)
+                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 mb-4">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-header bg-light border-0 text-center py-2">
+                                    <strong>{{ $product->product_name }}</strong>
+                                </div>
+                                <div class="card-body d-flex justify-content-center align-items-center p-2"
+                                    style="height: 220px;">
+                                    <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid"
+                                        alt="{{ $product->product_name }}"
+                                        style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                                </div>
+                                <div class="card-footer border-0 text-center py-2">
+                                    <a href="{{ url('product/details/' . $product->product_id) }}"
+                                        class="btn btn-outline-dark btn-sm">
+                                        Check Product Here
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
+            </div>
+
         </div>
     </div>
+
+
 @endsection

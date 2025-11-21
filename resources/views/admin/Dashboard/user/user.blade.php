@@ -43,11 +43,10 @@
                             <thead>
                                 <tr>
                                     <th class="border-top-0">ID</th>
-                                    <th class="border-top-0">user_id</th>
-                                    <th class="border-top-0">product_id</th>
-                                    <th class="border-top-0">qty</th>
-                                    <th class="border-top-0">total</th>
-                                    <th class="border-top-0">order_code</th>
+                                    <th class="border-top-0">Name</th>
+                                    <th class="border-top-0">Phone</th>
+                                    <th class="border-top-0">Address</th>
+                                    <th class="border-top-0">Role</th>
                                     <th class="border-top-0">Action</th>
                                 </tr>
                             </thead>
@@ -60,11 +59,18 @@
                                         <td>{{ $u->phone }}</td>
                                         <td>{{ $u->address }}</td>
                                         <td>{{ $u->role }}</td>
-                                        <td>{{ $u->created_at->format('d.m.Y') }}</td>
                                         <td>
-                                            <button class="btn btn-danger  deleteProudctBtn" title="{{ $u->name }}"
-                                                value="{{ $u->id }}"><i
-                                                    class="fa-solid fa-trash-can text-light"></i></button>
+                                            <a href="{{ route('admin#edit', $u->id) }}">
+                                                <button class="btn btn-success text-light edit " data-bs-whatever=""><i
+                                                        class=" fa-solid fa-pen-to-square"></i></button>
+                                            </a>
+                                            <button class="btn btn-danger deleteProudctBtn" title="{{ $u->name }}"
+                                                value="{{ $u->id }}"
+                                                @if (Auth::user()->id == $u->id) disabled @endif>
+                                                <i class="fa-solid fa-trash-can text-light"></i>
+                                            </button>
+
+
                                         </td>
                                     </tr>
                                 @endforeach

@@ -24,20 +24,20 @@ class AdminController extends Controller
             $orders = Order::all();
             $users = User::where('role', 'user')->get();
             return view('admin.Dashboard.dashboard', compact('category', 'products', 'users', 'orders'));
-
         } else {
             return \redirect()->route('user#home');
         }
-
     }
+
+
     public function index(Request $request)
     {
         $admin = User::where('id', Auth::user()->id)->first();
+
         return view('admin.Dashboard.admin');
     }
     public function update(Request $request)
     {
-        \logger($request->all());
 
         $data = $this->getRequestData($request);
         if ($request->hasFile('image')) {
@@ -47,7 +47,6 @@ class AdminController extends Controller
                 $data['image'] = $fileName;
                 User::where('id', Auth::user()->id)->update($data);
                 return \redirect()->route('admin#profile')->with(['success' => ' Update Success ']);
-
             } else {
                 $dbImage = User::where('id', Auth::user()->id)->first();
                 $dbImage = $dbImage->image;
@@ -59,12 +58,10 @@ class AdminController extends Controller
                 $data['image'] = $fileName;
                 User::where('id', Auth::user()->id)->update($data);
                 return \redirect()->route('admin#profile')->with(['success' => ' Update Success']);
-
             }
         } else {
             User::where('id', Auth::user()->id)->update($data);
             return \redirect()->route('admin#profile')->with(['success' => ' Update Success']);
-
         }
     }
     //chgPassword
@@ -84,7 +81,6 @@ class AdminController extends Controller
         } else {
             return \redirect()->route('admin#profile')->with(['success' => 'password Update Fail']);
         }
-
     }
     //user
     public function users()
@@ -92,9 +88,69 @@ class AdminController extends Controller
         $users = User::when(request('Key'), function ($query) {
             $searchKey = request('Key');
             $query->where('name', 'like', '%' . $searchKey . '%');
-        })->where('role', 'user')->get();
+        })->get();
+
+        return view('admin.Dashboard.user.user', compact('users'));
+    }
+
+    public function create()
+    {
+        return view('admin.Dashboard.create');
+    }
+
+    public function store(Request $request)
+    {
+        $this->getPasswordValidation($request);
+
+        $user = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'address' => $request->address,
+            'phone' => $request->phone,
+            'role' => $request->role,
+        ];
+
+        $users = User::Create($user);
+
         return view('admin.Dashboard.user', compact('users'));
     }
+
+    public function edit($id)
+    {
+        $user = User::where('id', $id)->first();
+
+        return view('admin.Dashboard.user.show', compact('user'));
+    }
+
+    public function userUpdate(Request $request, $id)
+    {
+        $data = $this->getRequestData($request);
+        if ($request->hasFile('image')) {
+            if (Auth::user()->image == null) {
+                $fileName = uniqid() . $request->file('image')->getClientOriginalName();
+                $request->file('image')->storeAs('public', $fileName);
+                $data['image'] = $fileName;
+                User::where('id', $id)->update($data);
+                return \redirect()->route('admin#profile')->with(['success' => ' Update Success ']);
+            } else {
+                $dbImage = User::where('id', $id)->first();
+                $dbImage = $dbImage->image;
+                if ($dbImage != null) {
+                    Storage::delete('public/' . $dbImage);
+                }
+                $fileName = uniqid() . $request->file('image')->getClientOriginalName();
+                $request->file('image')->storeAs('public', $fileName);
+                $data['image'] = $fileName;
+                User::where('id', $id)->update($data);
+                return \redirect()->route('admin#users')->with(['success' => ' Update Success']);
+            }
+        } else {
+            User::where('id', $id)->update($data);
+            return \redirect()->route('admin#users')->with(['success' => ' Update Success']);
+        }
+    }
+
     private function getValidation($request)
     {
         Validator::make($request->all(), [
@@ -112,7 +168,6 @@ class AdminController extends Controller
             'newPassword' => 'required|min:6|max:10',
             'confirmPassword' => 'required|min:6|same:newPassword',
         ])->validate();
-
     }
     private function getRequestData($request)
     {
