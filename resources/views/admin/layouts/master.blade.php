@@ -120,48 +120,81 @@
                 <nav class="sidebar-nav">
                     <ul id="sidebarnav">
                         <!-- User Profile-->
-                        <li class="sidebar-item pt-2">
-                            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{ route('dashboard') }}"
-                                aria-expanded="false">
-                                <i class="far fa-clock" aria-hidden="true"></i>
-                                <span class="hide-menu">Dashboard</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                href="{{ route('admin#profile') }}" aria-expanded="false">
-                                <i class="fa fa-user" aria-hidden="true"></i>
-                                <span class="hide-menu">Profile</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                href="{{ route('admin#category') }}" aria-expanded="false">
-                                <i class="fa fa-font" aria-hidden="true"></i>
-                                <span class="hide-menu">Category</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                href="{{ route('admin#product') }}" aria-expanded="false">
-                                <i class="fa-solid fa-cart-plus"></i>
-                                <span class="hide-menu">Products</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                href="{{ route('admin#orderList') }}" aria-expanded="false">
-                                <i class="fa-solid fa-chart-line"></i>
-                                <span class="hide-menu">Orders</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                href="{{ route('admin#users') }}" aria-expanded="false">
-                                <i class="fa-solid fa-users"></i>
-                                <span class="hide-menu">Users</span>
-                            </a>
-                        </li>
+                        @if (Auth::user()->role == 'admin')
+                            <li class="sidebar-item pt-2">
+                                <a class="sidebar-link waves-effect waves-dark sidebar-link"
+                                    href="{{ route('dashboard') }}" aria-expanded="false">
+                                    <i class="far fa-clock" aria-hidden="true"></i>
+                                    <span class="hide-menu">Dashboard</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link waves-effect waves-dark sidebar-link"
+                                    href="{{ route('admin#profile') }}" aria-expanded="false">
+                                    <i class="fa fa-user" aria-hidden="true"></i>
+                                    <span class="hide-menu">Profile</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link waves-effect waves-dark sidebar-link"
+                                    href="{{ route('admin#category') }}" aria-expanded="false">
+                                    <i class="fa fa-font" aria-hidden="true"></i>
+                                    <span class="hide-menu">Category</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link waves-effect waves-dark sidebar-link"
+                                    href="{{ route('admin#product') }}" aria-expanded="false">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    <span class="hide-menu">Products</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link waves-effect waves-dark sidebar-link"
+                                    href="{{ route('admin#orderList') }}" aria-expanded="false">
+                                    <i class="fa-solid fa-chart-line"></i>
+                                    <span class="hide-menu">Orders</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link waves-effect waves-dark sidebar-link"
+                                    href="{{ route('admin#users') }}" aria-expanded="false">
+                                    <i class="fa-solid fa-users"></i>
+                                    <span class="hide-menu">Users</span>
+                                </a>
+                            </li>
+                        @endif
+                        @if (Auth::user()->role == 'florist')
+                            <li class="sidebar-item">
+                                <a class="sidebar-link waves-effect waves-dark sidebar-link"
+                                    href="{{ route('admin#profile') }}" aria-expanded="false">
+                                    <i class="fa fa-user" aria-hidden="true"></i>
+                                    <span class="hide-menu">Profile</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link waves-effect waves-dark sidebar-link"
+                                    href="{{ route('admin#category') }}" aria-expanded="false">
+                                    <i class="fa fa-font" aria-hidden="true"></i>
+                                    <span class="hide-menu">Category</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link waves-effect waves-dark sidebar-link"
+                                    href="{{ route('admin#product') }}" aria-expanded="false">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    <span class="hide-menu">Products</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link waves-effect waves-dark sidebar-link"
+                                    href="{{ route('admin#orderList') }}" aria-expanded="false">
+                                    <i class="fa-solid fa-chart-line"></i>
+                                    <span class="hide-menu">Orders</span>
+                                </a>
+                            </li>
+                        @endif
+
                         <li class="text-center p-20 upgrade-btn">
                             <button class="btn btn-danger text-light" data-bs-toggle="modal"
                                 data-bs-target="#exampleModal">

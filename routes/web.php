@@ -5,6 +5,7 @@ use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderListController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\user\ProductController as UserProductController;
 use App\Http\Controllers\User\userController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,6 +35,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/cart/deleteAll', [userController::class, 'cartDeleteAll'])->name('user#cartDAll');
     Route::get('/ajax/order', [AjaxController::class, 'order'])->name('user#order');
     Route::get('/orders/detail/{id}', [OrderListController::class, 'UserOrderDetail'])->name('user.detail.orderDetail');
+    Route::post('/product/review/create', [UserProductController::class, 'createReview'])
+        ->name('product.review.create');
+    Route::post('/product/review/update', [UserProductController::class, 'update'])->name('product.review.update');
+    Route::delete('/product/review/delete/{id}', [UserProductController::class, 'delete'])->name('product.review.delete');
 });
 
 Route::middleware([

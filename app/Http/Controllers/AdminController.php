@@ -18,10 +18,10 @@ class AdminController extends Controller
     public function dashboard(Request $request)
     {
 
-        if (Auth::user()->role == 'admin') {
+        if (Auth::user()->role == 'admin' || Auth::user()->role == 'florist') {
             $category = Category::all();
             $products = Product::all();
-            $orders = Order::all();
+        $orders = Order::all();
             $users = User::where('role', 'user')->get();
             return view('admin.Dashboard.dashboard', compact('category', 'products', 'users', 'orders'));
         } else {

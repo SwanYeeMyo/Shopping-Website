@@ -43,6 +43,22 @@
         a {
             text-decoration: none
         }
+
+        .btn-primary {
+            color: #fff;
+            /* Text color */
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fad0c4, #ffecd2);
+            border: none;
+            /* Remove default border or match gradient if needed */
+            font-weight: bold;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
     </style>
 </head>
 
@@ -67,13 +83,13 @@
 </body>
 <nav class="navbar navbar-expand-md navbar-light  shadow   ">
     <div class="container-fluid ">
-        <a class="navbar-brand" href="#">M<b class="text-primary">Sure</b> </a>
+        <a class="navbar-brand floral-text " href="#">H<b class="floral-text ">anna Flower Shop</b> </a>
         <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
             aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"><i class="mt-1 fa-solid fa-bars"></i></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav mx-auto ">
+            <ul class="navbar-nav mx-auto floral-text  ">
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{{ route('user#home') }}">Home</a>
                 </li>
@@ -84,18 +100,6 @@
                     <a class="nav-link" href="{{ route('user#history') }}">Pending Orders</a>
                 </li>
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        More.
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <li><a class="dropdown-item" href="#popular">Popular</a></li>
-                        <li><a class="dropdown-item" href="#update">New Update</a></li>
-                        <li><a class="dropdown-item" href="#recent">Recently Added</a></li>
-
-                    </ul>
-                </li>
             </ul>
 
             @if (Auth::user() && Auth::user()->role != 'admin')
@@ -156,44 +160,75 @@
 
 
 
-@yield('content')
+<section>
+    @yield('content')
+</section>
 
 
-<footer id="service">
-    <div class="container mt-5 pt-5">
-        <div class="row g-3">
-            <div class="col-md-4">
-                <h2>Home</h2>
-                <h5>Product</h5>
-                <h5>Pending Orders</h5>
+<footer class="bg-pink-50 text-dark pt-5 pb-3">
+    <div class="container">
+        <div class="row">
+
+            <!-- About / Brand -->
+            <div class="col-md-4 mb-4">
+                <h5 class="floral-text mb-3">Hanna Flower Shop</h5>
+                <p class="small">
+                    Bringing the beauty of fresh flowers to your home, office, and special events.
+                    Handcrafted bouquets with love and care.
+                </p>
             </div>
-            <div class="col-md-4">
-                <h2>Our mission</h2>
-                <p>We offer sustainable access to delicious plant-base nutrition</p>
+
+            <!-- Quick Links -->
+            <div class="col-md-4 mb-4">
+                <h5 class="floral-text mb-3">Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#shop" class="text-dark text-decoration-none">Shop</a></li>
+                    <li><a href="#about" class="text-dark text-decoration-none">About Us</a></li>
+                    <li><a href="#services" class="text-dark text-decoration-none">Services</a></li>
+                    <li><a href="#subscribe" class="text-dark text-decoration-none">Newsletter</a></li>
+                    <li><a href="#contact" class="text-dark text-decoration-none">Contact</a></li>
+                </ul>
             </div>
-            <div class="col-md-4">
-                <button class="btn btn-outline-light text-light">DimiJuice</button>
+
+            <!-- Contact & Social -->
+            <div class="col-md-4 mb-4">
+                <h5 class="floral-text mb-3">Contact Us</h5>
+                <p class="small mb-1"><i class="fa-solid fa-location-dot me-2"></i>123 Flower Street, Your City</p>
+                <p class="small mb-1"><i class="fa-solid fa-phone me-2"></i>+1 234 567 890</p>
+                <p class="small mb-1"><i class="fa-solid fa-envelope me-2"></i>info@hannaflowershop.com</p>
+
+                <div class="mt-3">
+                    <a href="#" class="text-dark me-3"><i class="fa-brands fa-facebook fa-lg"></i></a>
+                    <a href="#" class="text-dark me-3"><i class="fa-brands fa-instagram fa-lg"></i></a>
+                    <a href="#" class="text-dark me-3"><i class="fa-brands fa-pinterest fa-lg"></i></a>
+                    <a href="#" class="text-dark"><i class="fa-brands fa-twitter fa-lg"></i></a>
+                </div>
             </div>
+
         </div>
-        <div class="row my-3">
-            <div class="col-md-7">
-                <form action="" class="d-flex  ">
-                    <input type="text" class="form-control w-50">
-                    <button class="btn btn-outline-light mx-4">SEND</button>
-                </form>
-            </div>
-            <div class="col-md-5 float-right text-center my-3">
-                <i class="fa-brands fa-facebook mx-3"></i>
-                <i class="fa-brands fa-twitter mx-3"></i>
-                <i class="fa-brands fa-instagram mx-3"></i>
-                <i class="fa-brands fa-tiktok mx-3"></i>
-                <i class="fa-brands fa-linkedin mx-3"></i>
-            </div>
+
+        <hr class="my-3">
+
+        <div class="text-center small">
+            &copy; {{ date('Y') }} Hanna Flower Shop. All rights reserved.
         </div>
-        <hr>
-        <p class="text-center">© 2022, theme-taste-demo Powered by Shopify</p>
     </div>
 </footer>
+
+<style>
+    .floral-text {
+        background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fad0c4, #ffecd2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: bold;
+    }
+
+    footer a:hover {
+        color: #ff6b81;
+        text-decoration: underline;
+    }
+</style>
+
 @yield('scriptSource')
 
 </html>

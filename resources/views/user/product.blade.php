@@ -9,7 +9,7 @@
                     <div class="card h-100">
                         <div class="card-header d-flex justify-content-between">
                             <div>Products Category</div>
-                            <div><span class="badge bg-primary rounded-pill">{{ count($categories) }}</span></div>
+                            <div><span class="badge btn-primary rounded-pill">{{ count($categories) }}</span></div>
                         </div>
 
                         <div class="card-body">
@@ -99,20 +99,43 @@
                                                 <h6 class="mb-1">{{ $p->name }}</h6>
                                                 <p class="mb-1 text-primary">{{ $p->price }}</p>
                                                 <div class="text-warning">
-                                                    <i class="fa-solid fa-star"></i>
-                                                    <i class="fa-solid fa-star"></i>
-                                                    <i class="fa-solid fa-star"></i>
-                                                    <i class="fa-solid fa-star"></i>
+                                                    @php
+
+                                                        $avgRating = $p->ratings->avg('rating') ?? 0;
+                                                        $fullStars = floor($avgRating);
+                                                        $halfStar = $avgRating - $fullStars >= 0.5 ? true : false;
+                                                        $emptyStars = 5 - ceil($avgRating);
+                                                    @endphp
+
+
+                                                    @for ($i = 0; $i < $fullStars; $i++)
+                                                        <i class="fa-solid fa-star"></i>
+                                                    @endfor
+
+
+                                                    @if ($halfStar)
+                                                        <i class="fa-solid fa-star-half-stroke"></i>
+                                                    @endif
+
+
+                                                    @for ($i = 0; $i < $emptyStars; $i++)
+                                                        <i class="fa-regular fa-star"></i>
+                                                    @endfor
                                                 </div>
+
+                                                <small class="text-muted">
+                                                    {{ number_format($avgRating, 1) }} / 5 ({{ $p->ratings->count() }}
+                                                    reviews)
+                                                </small>
                                             </div>
                                         </div>
                                     </a>
                                 </div>
                             @endforeach
                         @else
-                            <h5 class="text-center text-primary my-5">
-                                <i class="fs-5 mx-2 fa-solid fa-magnifying-glass"></i>No Products Found for
-                                "{{ request('Key') }}"
+                            <h5 class="text-center text-secondary my-5">
+                                <i class="fs-5 mx-2 fa-solid fa-magnifying-glass"></i>No Products Found
+
                             </h5>
                         @endif
                     </div>

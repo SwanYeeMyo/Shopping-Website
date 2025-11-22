@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\orderList;
 use App\Models\Product;
+use App\Models\Topping;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -35,7 +36,7 @@ class userController extends Controller
     }
     public function product()
     {
-        $products = Product::select('products.*')->When(request('Key'), function ($query) {
+        $products = Product::with('ratingsWithComment')->select('products.*')->When(request('Key'), function ($query) {
             $searchKey = \request('Key');
             $query->where('name', 'like', '%' . $searchKey . '%');
         })->orderBy('product_id', 'desc')->paginate(6);
@@ -65,10 +66,11 @@ class userController extends Controller
     {
         $category_id = $request->category_id;
         $randomNumber = Product::inRandomOrder()->limit(4)->get();
-        $product = Category::select('categories.*', 'categories.name as category_name', 'products.*')->leftJoin('products', 'categories.category_id', 'products.category_id')
-            ->where('product_id', $id)->first();
+        $topping = Topping::get();
 
-        return view('user.detail.detail', compact('product', 'randomNumber'));
+        $product = Product::with('category', 'ratings')->where('product_id', $id)->first();
+
+        return view('user.detail.detail', compact('product', 'randomNumber', 'topping'));
     }
     //cart
     public function cart()

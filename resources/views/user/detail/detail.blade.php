@@ -4,7 +4,7 @@
         <nav aria-label="breadcrumb " class="mt-5 p-lg-2">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('user#home') }}">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Devices</a></li>
+                <li class="breadcrumb-item"><a href="#">Flowers</a></li>
                 <li class="breadcrumb-item"><a href="#">{{ $product->category_name }}</a></li>
                 <li class="breadcrumb-item active" aria-current="page">{{ $product->name }}</li>
             </ol>
@@ -22,13 +22,8 @@
                 <div class="card shadow-sm  border-0">
                     <div class="card-body ">
                         <h6>{{ $product->name }}</h6>
-                        <h5 class="text-primary text-left"><b>{{ $product->price }}</b> Ks .</h5>
-                        {{-- <button type="button" class="btn btn-light" data-bs-toggle="tooltip" data-bs-placement="right"
-                            data-bs-title="Apple 1 Year Limited Warranty was included.">
-                            <span>
-                                1 Year Warranty
-                            </span>
-                        </button> --}}
+                        <h5 class="floral-text text-left"><b>{{ $product->price }}</b> Ks .</h5>
+
                         <div class="mt-4">
                             <p>{{ $product->description }}</p>
                         </div>
@@ -45,15 +40,26 @@
                                         <option value="2">2</option>
                                         <option value="3">3</option>
                                         <option value="4">4</option>
-
                                     </select>
                                     <div>
-                                        <button type="submit" class="mx-2 btn btn-outline-primary"><i
+                                        <button type="submit" class="mx-2 btn btn-primary"><i
                                                 class="fa-solid fa-cart-plus"></i></button>
                                     </div>
-
                                 </div>
-
+                                <div class="mb-2">
+                                    <label class="form-label">Add Toppings:</label>
+                                    @foreach ($topping as $t)
+                                        @if ($product->toppings->contains($t))
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="toppings[]"
+                                                    value="{{ $t->id }}" id="topping{{ $t->id }}">
+                                                <label class="form-check-label" for="topping{{ $t->id }}">
+                                                    {{ $t->name }} ({{ number_format($t->price) }} kyats)
+                                                </label>
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </div>
                             </form>
 
                         </div>
@@ -87,6 +93,58 @@
                             Operating Hour 9:00am to 8:00pm
                         </span>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-12">
+                <h5>Rating & Reviews</h5>
+
+                <!-- Average Rating -->
+                <h6 class="mt-3">Average Rating:
+                    <span id="avgRating">
+                        {{ number_format($product->ratings->avg('rating'), 1) ?? 0 }}
+                    </span> / 5
+                </h6>
+
+                <!-- User Rating Form -->
+                @auth
+                    <div class="card mt-3">
+                        <div class="card-body">
+                            <h6>Leave a Review</h6>
+
+                            <div class="d-flex align-items-center">
+                                <select id="rating" class="form-select w-auto">
+                                    <option value="1">⭐ 1</option>
+                                    <option value="2">⭐ 2</option>
+                                    <option value="3">⭐ 3</option>
+                                    <option value="4">⭐ 4</option>
+                                    <option value="5">⭐ 5</option>
+                                </select>
+                            </div>
+
+                            <textarea id="comment" class="form-control mt-2" placeholder="Write your comment..."></textarea>
+
+                            <button class="btn btn-primary mt-2" id="submitReview">Submit</button>
+                        </div>
+                    </div>
+                @else
+                    <div class="alert alert-info mt-3">Please login to leave a review.</div>
+                @endauth
+
+                <div class="mt-4" id="reviewList">
+                    @foreach ($product->ratingsWithComment as $r)
+                        <div class="card p-3 mb-2">
+                            <strong>{{ $r->user->name }}</strong>
+                            <span class="text-warning">
+                                @for ($i = 1; $i <= $r->rating; $i++)
+                                    ⭐
+                                @endfor
+                            </span>
+                            <p class="mb-0">{{ $r->comment }}</p>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -127,5 +185,50 @@
     <script>
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+        $('#submitReview').click(function() {
+            let rating = $('#rating').val();
+            let comment = $('#comment').val().trim(); // trim whitespace
+            let product_id = "{{ $product->product_id }}";
+
+            if (!rating) {
+                alert('Please select a rating before submitting.');
+                return;
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('product.review.create') }}",
+                data: {
+                    rating: rating,
+                    comment: comment,
+                    product_id: product_id,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(res) {
+                    $('#comment').val('');
+
+                    if (comment) {
+                        // Only show review card if comment exists
+                        $('#reviewList').prepend(`
+                    <div class="card p-3 mb-2">
+                        <strong>${res.user}</strong>
+                        <span class="text-warning">${'⭐'.repeat(res.rating)}</span>
+                        <p class="mb-0">${res.comment}</p>
+                    </div>
+                `);
+                    } else {
+                        // Show thank you alert if only rating submitted
+                        alert('Thank you for giving a rating!');
+                    }
+
+                    // Update average rating
+                    $('#avgRating').text(res.average);
+                },
+                error: function(err) {
+                    alert('Something went wrong. Please try again.');
+                }
+            });
+        });
     </script>
 @endsection

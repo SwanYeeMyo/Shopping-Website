@@ -100,6 +100,7 @@
                                 3000 kyats
                             </div>
                         </div>
+
                         <hr>
                         <div class="d-flex justify-content-between">
                             <div>
