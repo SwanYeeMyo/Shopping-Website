@@ -35,7 +35,7 @@
                                         class="fa-solid fa-magnifying-glass"></i></button>
                             </div>
                         </form>
-                        <div class="col-md-3 col-sm-4 col-xs-6">
+                        <div class="">
                             <button type="button " class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#ModalEdit" data-bs-whatever=""><i
                                     class="mx-1 fa-solid fa-plus"></i>Create</button>
@@ -107,10 +107,13 @@
     <div class="modal fade p-2" id="ModalEdit" tabindex="-1" aria-labelledby="ModalEditLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header text-center">
-                    <h1 class="modal-title  fs-3" id="ModalEditLabel">Create Prouducts </h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="flex bg-black">
+                    <div class="modal-header text-center">
+                        <h1 class="modal-title  fs-3" id="ModalEditLabel">Create Prouducts </h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
                 </div>
+
                 <div class="modal-body">
 
                     <form class="form-horizontal form-material" action="{{ route('product#productCreate') }}"

@@ -27,46 +27,47 @@
                         <div class="mt-4">
                             <p>{{ $product->description }}</p>
                         </div>
-                        <div>
+                        <form action="{{ route('user#cartCreate') }}" method="POST">
+                            @csrf
 
-                            <form action="{{ route('user#cartCreate') }}" method="GET">
-                                @csrf
-
-                                <input type="hidden" name="product_id" class="form-control "
-                                    value="{{ $product->product_id }}">
-                                <div class="d-flex">
-                                    <select class="form-select mx-1" name="qty" aria-label="Default select example">
-                                        <option selected value="1">1</option>
+                            <div id="group-wrapper">
+                                <!-- One group (template) -->
+                                <div class="item-group mb-4 border p-3 rounded">
+                                    <label class="form-label fw-bold">Quantity</label>
+                                    <select class="form-select mb-2" name="items[0][qty]">
+                                        <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
                                         <option value="4">4</option>
                                     </select>
-                                    <div>
-                                        <button type="submit" class="mx-2 btn btn-primary"><i
-                                                class="fa-solid fa-cart-plus"></i></button>
-                                    </div>
-                                </div>
-                                <div class="mb-2">
-                                    <label class="form-label">Add Toppings:</label>
-                                    @foreach ($topping as $t)
-                                        @if ($product->toppings->contains($t))
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="toppings[]"
-                                                    value="{{ $t->id }}" id="topping{{ $t->id }}">
-                                                <label class="form-check-label" for="topping{{ $t->id }}">
-                                                    {{ $t->name }} ({{ number_format($t->price) }} kyats)
-                                                </label>
-                                            </div>
-                                        @endif
-                                    @endforeach
-                                </div>
-                            </form>
 
-                        </div>
+                                    <input type="hidden" name="items[0][product_id]" value="{{ $product->product_id }}">
+
+                                    <label class="form-label fw-bold">Toppings:</label>
+
+                                    @foreach ($topping as $t)
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" name="items[0][toppings][]"
+                                                value="{{ $t->id }}" id="item0_topping{{ $t->id }}">
+
+                                            <label class="form-check-label" for="item0_topping{{ $t->id }}">
+                                                {{ $t->name }} ({{ number_format($t->price) }} ks)
+                                            </label>
+                                        </div>
+                                    @endforeach
+
+                                    <button type="button" class="btn btn-danger mt-2 remove-group d-none">Remove</button>
+                                </div>
+                            </div>
+
+                            <button type="button" id="addMore" class="btn btn-secondary mt-2">+ Add More</button>
+
+                            <button type="submit" class="btn btn-primary mt-2">Submit All</button>
+                        </form>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6 col-sm-12">
+            <div class="col-lg-3 mt-5 col-md-6 col-sm-12">
                 <div class="card shadow border ">
                     <div class="card-header border-0 text-muted">
                         Delivery
@@ -88,7 +89,7 @@
                         </p>
                     </div>
                     <div class="card-footer">
-                        <button class="btn btn-outline-primary w-100">Call Us 09950314865</button>
+                        <button class="btn btn-outline-primary w-100">Call Us 09770774800</button>
                         <span class="text-center d-block my-2" style="font-size: 10px">
                             Operating Hour 9:00am to 8:00pm
                         </span>
@@ -188,7 +189,7 @@
 
         $('#submitReview').click(function() {
             let rating = $('#rating').val();
-            let comment = $('#comment').val().trim(); // trim whitespace
+            let comment = $('#comment').val().trim();
             let product_id = "{{ $product->product_id }}";
 
             if (!rating) {
@@ -218,7 +219,7 @@
                     </div>
                 `);
                     } else {
-                        // Show thank you alert if only rating submitted
+
                         alert('Thank you for giving a rating!');
                     }
 
@@ -229,6 +230,44 @@
                     alert('Something went wrong. Please try again.');
                 }
             });
+        });
+
+        let index = 1;
+
+        document.getElementById('addMore').addEventListener('click', function() {
+            let wrapper = document.getElementById('group-wrapper');
+            let firstGroup = wrapper.querySelector('.item-group');
+            let newGroup = firstGroup.cloneNode(true);
+
+            newGroup.querySelectorAll('select, input[type="hidden"], input[type="checkbox"]').forEach(el => {
+                el.name = el.name.replace('[0]', '[' + index + ']');
+
+                if (el.type === 'checkbox') {
+                    el.checked = false;
+                }
+            });
+
+            newGroup.querySelectorAll('input[type="checkbox"]').forEach((el) => {
+                let oldId = el.id;
+                el.id = 'item' + index + '_' + oldId.split('_').pop();
+
+                let label = newGroup.querySelector(`label[for="${oldId}"]`);
+                if (label) {
+                    label.setAttribute('for', el.id);
+                }
+            });
+
+            newGroup.querySelector('.remove-group').classList.remove('d-none');
+
+            wrapper.appendChild(newGroup);
+
+            index++;
+        });
+
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-group')) {
+                e.target.closest('.item-group').remove();
+            }
         });
     </script>
 @endsection

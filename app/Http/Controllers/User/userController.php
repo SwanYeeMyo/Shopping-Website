@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\cart;
+use App\Models\CartTopping;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -72,40 +73,68 @@ class userController extends Controller
 
         return view('user.detail.detail', compact('product', 'randomNumber', 'topping'));
     }
-    //cart
+
     public function cart()
     {
-        $carts = cart::select('carts.*', 'products.name', 'products.image as product_image', 'products.price as product_price', 'users.name as user_name')
-            ->leftJoin('products', 'carts.product_id', 'products.product_id')
-            ->leftJoin('users', 'carts.user_id', 'users.id')->where('user_id', Auth::user()->id)->get();
+
+        $carts = Cart::with([
+            'product',
+            'toppings.topping'
+        ])
+            ->where('user_id', Auth::id())
+            ->get();
 
         $totalPrice = 0;
+
         foreach ($carts as $cart) {
-            $totalPrice += $cart->product_price * $cart->qty;
+
+            $productTotal = $cart->product->price;
+
+
+            $toppingTotal = $cart->toppings->sum(function ($t) {
+                return $t->topping->price;
+            });
+
+            $totalPrice += ($productTotal + $toppingTotal) * $cart->qty;
         }
+
         $total = $totalPrice;
-        $Total = $totalPrice + 3000;
-        //dd($total);
-        //dd($carts->toArray());
+        $Total = $total + 3000;
 
         return view('user.detail.newCart', compact('carts', 'total', 'Total'));
     }
+
+
     public function createCart(Request $request)
     {
 
-        $data = [
-            'user_id' => Auth::user()->id,
-            'product_id' => $request->product_id,
-            'qty' => $request->qty,
-            'color' => $request->color,
-        ];
-        cart::create($data);
+        foreach ($request->items as $item) {
+            $cart = Cart::create([
+                'user_id'    => Auth::id(),
+                'product_id' => $item['product_id'],
+                'qty'        => $item['qty'],
+                'color'      => $item['color'] ?? null,
+            ]);
 
-        return \redirect()->route('user#products')->with(['success' => 'Added to Cart']);
+            if (!empty($item['toppings'])) {
+                foreach ($item['toppings'] as $toppingId) {
+                    CartTopping::create([
+                        'cart_id'    => $cart->id,
+                        'topping_id' => $toppingId,
+                        'price'      => Topping::find($toppingId)->price,
+                    ]);
+                }
+            }
+        }
+
+        return redirect()
+            ->route('user#products')
+            ->with(['success' => 'Items added to cart successfully!']);
     }
     public function deleteCart(Request $request)
     {
         $id = $request->cart_id;
+
         cart::where('cart_id', $id)->delete();
         return \redirect()->route('user#cart')->with(['success' => 'Delete Success']);
     }

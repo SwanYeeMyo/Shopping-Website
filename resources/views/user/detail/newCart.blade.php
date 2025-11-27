@@ -28,7 +28,7 @@
                     <thead class="thead-dark">
                         <tr>
                             <th>Product Image</th>
-                            <th>name</th>
+                            <th>Product name</th>
                             <th>Price</th>
                             <th>Quantity</th>
                             <th>Total</th>
@@ -37,33 +37,81 @@
                     </thead>
                     <tbody class="align-middle">
                         @foreach ($carts as $cart)
+                            @php
+                                $toppingTotal = $cart->toppings->sum('price');
+
+                                $lineTotal = ($cart->product->price + $toppingTotal) * $cart->qty;
+                            @endphp
+
                             <tr>
-                                {{-- <input type="hidden" id="pizzaPrice" value="{{ $cart->pizza_price }}" > --}}
                                 <input type="hidden" class="orderId" value="{{ $cart->id }}">
                                 <input type="hidden" class="productId" value="{{ $cart->product_id }}">
-                                <input type="hidden" class="userId" value="{{ $cart->user_id }}">
+                                <input type="hidden" class="userId" value="{{ $cart->user->name }}">
+
+
                                 <td class="align-middle">
-                                    <img src="{{ asset('storage/' . $cart->product_image) }}" style="width: 100px"
+                                    <img src="{{ asset('storage/' . $cart->product->image) }}" style="width: 100px;"
                                         alt="">
                                 </td>
-                                <td class="align-middle"><img src="" alt="" style="width: 50px;">
-                                    {{ $cart->name }}</td>
-                                <td class="align-middle" id="pizzaPrice">{{ $cart->product_price }} kyats</td>
+
+
+                                <td class="align-middle text-start">
+                                    <strong>{{ $cart->product->name }}</strong>
+
+                                    @if ($cart->toppings->count() > 0)
+                                        <ul class="mt-2 small text-muted mb-0">
+                                            @php
+                                                $toppingTotal = $cart->toppings->sum('price');
+                                            @endphp
+
+                                            @if ($cart->toppings->count() > 0)
+                                                <ul class="mt-2 small text-muted mb-0">
+                                                    @foreach ($cart->toppings as $topping)
+                                                        <li>
+                                                            {{ $topping->topping->name }}
+                                                            <span
+                                                                class="text-primary">({{ number_format($topping->price) }}
+                                                                ks)</span>
+
+                                                            <span class="topping-item"
+                                                                data-tid="{{ $topping->topping_id }}"
+                                                                data-price="{{ $topping->price }}" style="display:none;">
+                                                            </span>
+                                                        </li>
+                                                    @endforeach
+
+                                                    <li class="fw-bold mt-1">
+                                                        Topping Total:
+                                                        <span class="text-success">{{ number_format($toppingTotal) }}
+                                                            ks</span>
+                                                    </li>
+                                                </ul>
+                                            @endif
+                                        </ul>
+                                    @endif
+                                </td>
+
+                                <td class="align-middle" id="pizzaPrice">
+                                    {{ number_format($cart->product->price) }} kyats
+                                </td>
+
                                 <td class="align-middle">
                                     <div class="input-group quantity mx-auto" style="width: 100px;">
-
-
                                         <input type="text" disabled
-                                            class="form-control form-control-sm  border-0 text-center" id="qty"
+                                            class="form-control form-control-sm border-0 text-center" id="qty"
                                             value="{{ $cart->qty }}">
-
                                     </div>
                                 </td>
-                                <td class="align-middle" id="total">{{ $cart->qty * $cart->product_price }}kyats
+
+                                <td class="align-middle">
+                                    <span id="totalText">{{ number_format($lineTotal) }} kyats</span>
+                                    <input type="hidden" class="totalValue" value="{{ $lineTotal }}">
                                 </td>
+
                                 <td>
-                                    <button type="button"class="deleteBtn  btn btn-link btn-sm px-3"
-                                        value="{{ $cart->cart_id }}" title="{{ $cart->name }}" data-ripple-color="dark">
+                                    <button type="button" class="deleteBtn btn btn-link btn-sm px-3"
+                                        value="{{ $cart->cart_id }}" title="{{ $cart->product->name }}"
+                                        data-ripple-color="dark">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 </td>
@@ -180,26 +228,31 @@
             $('#cart_id').val(productId);
             $('#deleteModel').modal('show');
         });
-        $('#orderBtn').click(function() {
 
-            // $parentNode = $(this).parents("tr");
-            // $price = $parentNode.find('#pizzaPrice').text().replace("kyats", "");
-            // $qty = Number($parentNode.find('#qty').val());
-            // $total = $price * $qty;
-            // console.log($total);
-            // $parentNode.find('#total').html($total + " kyats")
+        $('#orderBtn').click(function() {
             $orderList = [];
             $random = Math.floor(Math.random() * 10001);
             $('#dataTable tbody tr').each(function(index, row) {
-                $orderList.push({
-                    'user_id': $(row).find('.userId').val(),
-                    'product_id': $(row).find('.productId').val(),
-                    'qty': $(row).find('#qty').val(),
-                    'total': $(row).find('#total').text().replace('kyats', '') * 1,
-                    'order_code': 'POS' + $random,
+                let toppingList = [];
+                $(row).find('.topping-item').each(function() {
+                    toppingList.push({
+                        topping_id: $(this).data('tid'),
+                        price: $(this).data('price')
+                    });
                 });
+                $orderList.push({
+                    user_id: $(row).find('.userId').val(),
+                    product_id: $(row).find('.productId').val(),
+                    qty: $(row).find('#qty').val(),
+                    'total': Number($(row).find('.totalValue').val()),
+                    order_code: 'POS' + $random,
+                    toppings: toppingList
+                });
+
             });
-            console.log($orderList);
+
+            console.log($orderList)
+
             $.ajax({
                 type: 'get',
                 url: 'http://127.0.0.1:8000/ajax/order',
@@ -211,21 +264,6 @@
                     }
                 }
             })
-            // $('#subTotal').html(`${$totalPrice} kyats`);
-            // $('#finalPrice').html(`${$totalPrice+3000} kyats`);
-
         })
     </script>
-    <!-- Modal -->
-    {{-- Delete All model --}}
 @endsection
-
-<!-- Cart End -->
-
-
-<!-- Footer Start -->
-
-<!-- Footer End -->
-
-
-<!-- Back to Top -->

@@ -28,7 +28,7 @@ Route::get('/product/filter/{id}', [userController::class, 'filter'])->name('use
 Route::get('/product/details/{id}', [userController::class, 'details'])->name('user#detail');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/cart/create', [userController::class, 'createCart'])->name('user#cartCreate');
+    Route::post('/cart/create', [userController::class, 'createCart'])->name('user#cartCreate');
     Route::get('/cart', [userController::class, 'cart'])->name('user#cart');
     Route::get('/history', [usercontroller::class, 'history'])->name('user#history');
     Route::get('/cart/delete', [userController::class, 'deleteCart'])->name('user#cartDelete');

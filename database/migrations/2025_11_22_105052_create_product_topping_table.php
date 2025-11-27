@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::create('product_topping', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('product_id'); // your custom PK
+            $table->unsignedBigInteger('product_id');
             $table->foreignId('topping_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });

@@ -1,11 +1,6 @@
 @extends('admin.layouts.master')
 @section('content')
     <div class="container-fluid">
-
-
-        <!-- ============================================================== -->
-        <!-- RECENT SALES -->
-        <!-- ============================================================== -->
         <div class="row">
             <div class="col-md-12 col-lg-12 col-sm-12">
                 <div class="row">
@@ -35,12 +30,7 @@
                                         class="fa-solid fa-magnifying-glass"></i></button>
                             </div>
                         </form>
-                        {{-- <div class="col-md-3 col-sm-4 col-xs-6">
-                            <button type="button " class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#ModalEdit" data-bs-whatever=""><i
-                                    class="mx-1 fa-solid fa-plus"></i>Create</button>
 
-                        </div> --}}
                     </div>
 
                     <div class="table-responsive">
@@ -52,7 +42,6 @@
                                     <th class="border-top-0">Total</th>
                                     <th class="border-top-0">Staus</th>
                                     <th class="border-top-0">Action</th>
-
                                 </tr>
                             </thead>
                             <tbody>
@@ -85,10 +74,6 @@
                                     </tr>
                                 @endforeach
                                 {{ $orders->links() }}
-
-
-
-
                             </tbody>
                         </table>
 
@@ -98,11 +83,7 @@
         </div>
 
     </div>
-    <!-- Model create -->
 
-    <!-- Model create End -->
-
-    <!-- Model Delete-->
     <div class="modal fade p-2" id="deleteOrders" tabindex="-1" aria-labelledby="ModalEditLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered ">
             <div class="modal-content">
@@ -127,9 +108,8 @@
             </div>
         </div>
     </div>
-    <!-- Model Update End -->
+
     <script>
-        // Delete modal
         $(document).ready(function() {
             $('.deleteProudctBtn').click(function(e) {
                 e.preventDefault();
@@ -142,7 +122,7 @@
             });
         });
 
-        // Change order status
+
         $(document).on('change', '.changeStatus', function() {
             let id = $(this).data('id');
             let status = $(this).val();

@@ -52,7 +52,7 @@
 
                                     </td>
 
-                                    <td>{{ $h->total_price }}</td>
+                                    <td>{{ number_format($h->total_price) }}</td>
                                     <td>
                                         @if ($h->status == 0)
                                             <h6 class="text-warning">Pending</h6>

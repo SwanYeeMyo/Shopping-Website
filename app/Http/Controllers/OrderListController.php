@@ -26,10 +26,15 @@ class OrderListController extends Controller
 
     public function detail($orderId)
     {
-        $order = Order::with(['user', 'orderItems.product'])->findOrFail($orderId);
+        $order = Order::with([
+            'user',
+            'orderItems.product',
+            'orderItems.toppings.topping'
+        ])->findOrFail($orderId);
 
         return view('admin.orders.detail', compact('order'));
     }
+
 
     public function changeStatus(Request $request)
 
@@ -51,8 +56,11 @@ class OrderListController extends Controller
 
     public function UserOrderDetail($id)
     {
-
-        $order = Order::with('orderItems.product', 'user')->find($id);
+        $order = Order::with([
+            'orderItems.product',
+            'orderItems.toppings.topping',
+            'user'
+        ])->find($id);
 
         if (!$order) {
             return redirect()->back()->with('error', 'Order not found.');

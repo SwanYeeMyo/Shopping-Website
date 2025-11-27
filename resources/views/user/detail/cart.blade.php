@@ -172,6 +172,7 @@
                     var title = $(this).attr('title');
                     $('#deleteName').text(title);
                     $('#cart_id').val(productId);
+
                     $('#deleteModel').modal('show');
                 });
                 $('#clickBtn').click(function() {

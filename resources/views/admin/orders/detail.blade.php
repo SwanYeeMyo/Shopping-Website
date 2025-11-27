@@ -6,7 +6,7 @@
 
         <div class="row">
             <div class="col-md-12 col-lg-12 col-sm-12">
-                
+
                 <div class="row">
                     <div class="col-lg-4"></div>
                     <div class="col-lg-4"></div>
@@ -56,11 +56,29 @@
 
                             <tbody>
                                 @foreach ($order->orderItems as $item)
+                                    @php
+                                        $toppingTotal = $item->toppings->sum(fn($t) => $t->topping->price);
+                                        $subtotal = ($item->product->price + $toppingTotal) * $item->quantity;
+                                    @endphp
                                     <tr>
                                         <td>{{ $item->product->name }}</td>
                                         <td>{{ number_format($item->product->price) }} kyats</td>
                                         <td>{{ $item->quantity }}</td>
-                                        <td>{{ number_format($item->total) }} kyats</td>
+                                        <td>
+                                            @if ($item->toppings->count() > 0)
+                                                <ul class="mb-0">
+                                                    @foreach ($item->toppings as $t)
+                                                        <li>{{ $t->topping->name }} ({{ number_format($t->topping->price) }}
+                                                            ks)</li>
+                                                    @endforeach
+                                                </ul>
+                                                <small class="text-success">Topping total:
+                                                    {{ number_format($toppingTotal) }} ks</small>
+                                            @else
+                                                <span>-</span>
+                                            @endif
+                                        </td>
+                                        <td>{{ number_format($subtotal) }} kyats</td>
                                     </tr>
                                 @endforeach
                             </tbody>
