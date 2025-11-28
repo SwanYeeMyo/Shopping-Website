@@ -1,0 +1,74 @@
+version: "3.8"
+
+services:
+    app:
+        build:
+            args:
+                user: dimitri
+                uid: 1000
+            context: ./
+            dockerfile: Dockerfile
+        image: shopping-app
+        container_name: shopping-app
+        restart: unless-stopped
+        working_dir: /var/www/
+        volumes:
+            - ./:/var/www
+            - ./../logs:/var/www/storage/logs
+        networks:
+            - backend
+        # deploy:
+        #     resources:
+        #         limits:
+        #             cpus: "2.0" # 2 CPU cores
+        #             memory: 2g # 2GB RAM
+
+    db:
+        image: mysql:8.0
+        container_name: shopping-db
+        restart: unless-stopped
+        ports:
+            - 3308:3306
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_USER: ${DB_USERNAME}
+            SERVICE_TAGS: dev
+            SERVICE_NAME: mysql
+        volumes:
+            - mysqldb:/var/lib/mysql
+        networks:
+            - backend
+        # deploy:
+        #     resources:
+        #         limits:
+        #             cpus: "1.0" # 1 CPU core
+        #             memory: 1g # 1GB RAM
+
+    nginx:
+        image: nginx:alpine
+        container_name: shopping-nginx
+        restart: unless-stopped
+        ports:
+            - 8080:80
+        volumes:
+            - ./:/var/www
+            - ./docker-compose/nginx:/etc/nginx/conf.d/
+        networks:
+            - backend
+            - nginx-network
+        # deploy:
+        #     resources:
+        #         limits:
+        #             cpus: "0.5" # 0.5 CPU core
+        #             memory: 512m # 512MB RAM
+
+volumes:
+    mysqldb:
+
+networks:
+    nginx-network:
+        driver: bridge
+    backend:
+        driver: bridge
