@@ -255,7 +255,7 @@
 
             $.ajax({
                 type: 'get',
-                url: 'http://127.0.0.1:8000/ajax/order',
+                url: '{{ route('user#order') }}',
                 data: Object.assign({}, $orderList),
                 dataType: 'json',
                 success: function(response) {
