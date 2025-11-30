@@ -64,6 +64,18 @@ services:
         #             cpus: "0.5" # 0.5 CPU core
         #             memory: 512m # 512MB RAM
 
+    node:
+        image: node:20-alpine
+        container_name: shopping-node
+        working_dir: /var/www
+        volumes:
+            - ./:/var/www
+        ports:
+            - "5173:5173"
+        command: sh -c "npm install && npm run dev"
+        networks:
+            - backend
+
 volumes:
     mysqldb:
 
