@@ -33,7 +33,7 @@ class userController extends Controller
 
         $popularProducts = Product::whereIn('product_id', $popularProductIds)->get();
 
-        return view('user.home', compact('recentlyAddedProducts', 'popularProducts'));
+        return view('user.Home', compact('recentlyAddedProducts', 'popularProducts'));
     }
     public function product()
     {
